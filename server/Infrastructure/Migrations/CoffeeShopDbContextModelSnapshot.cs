@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CoffeeShopBack.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(CoffeeShopDbContext))]
     partial class CoffeeShopDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,31 @@ namespace CoffeeShopBack.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CoffeeShopBack.Models.Category", b =>
+            modelBuilder.Entity("Domain.Models.Additional", b =>
+                {
+                    b.Property<string>("AdditionalId")
+                        .HasMaxLength(36)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("smallmoney");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("AdditionalId");
+
+                    b.ToTable("Additionals");
+                });
+
+            modelBuilder.Entity("Domain.Models.Category", b =>
                 {
                     b.Property<string>("CategoryId")
                         .HasMaxLength(36)
@@ -48,7 +72,7 @@ namespace CoffeeShopBack.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.CoffeeShop", b =>
+            modelBuilder.Entity("Domain.Models.CoffeeShop", b =>
                 {
                     b.Property<string>("CoffeeShopId")
                         .HasMaxLength(36)
@@ -95,10 +119,13 @@ namespace CoffeeShopBack.Migrations
 
                     b.HasKey("CoffeeShopId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("CoffeeShops");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.Location", b =>
+            modelBuilder.Entity("Domain.Models.Location", b =>
                 {
                     b.Property<string>("LocationId")
                         .HasMaxLength(36)
@@ -130,7 +157,7 @@ namespace CoffeeShopBack.Migrations
                     b.ToTable("Locations");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.MenuItem", b =>
+            modelBuilder.Entity("Domain.Models.MenuItem", b =>
                 {
                     b.Property<string>("MenuItemId")
                         .HasMaxLength(36)
@@ -138,7 +165,6 @@ namespace CoffeeShopBack.Migrations
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("Amount")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .IsUnicode(false)
                         .HasColumnType("varchar(30)");
@@ -154,7 +180,6 @@ namespace CoffeeShopBack.Migrations
                         .HasColumnType("time(0)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)");
@@ -182,7 +207,22 @@ namespace CoffeeShopBack.Migrations
                     b.ToTable("MenuItems");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.Order", b =>
+            modelBuilder.Entity("Domain.Models.MenuItemAdditional", b =>
+                {
+                    b.Property<string>("MenuItemId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AdditionalId")
+                        .HasColumnType("varchar(36)");
+
+                    b.HasKey("MenuItemId", "AdditionalId");
+
+                    b.HasIndex("AdditionalId");
+
+                    b.ToTable("MenuItemAdditionals");
+                });
+
+            modelBuilder.Entity("Domain.Models.Order", b =>
                 {
                     b.Property<string>("OrderId")
                         .HasMaxLength(36)
@@ -196,7 +236,6 @@ namespace CoffeeShopBack.Migrations
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)");
@@ -205,7 +244,6 @@ namespace CoffeeShopBack.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("PaymentType")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
@@ -237,7 +275,7 @@ namespace CoffeeShopBack.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.OrderLine", b =>
+            modelBuilder.Entity("Domain.Models.OrderLine", b =>
                 {
                     b.Property<string>("OrderLineId")
                         .HasMaxLength(36)
@@ -267,15 +305,32 @@ namespace CoffeeShopBack.Migrations
 
                     b.HasKey("OrderLineId");
 
-                    b.HasIndex("MenuItemId")
-                        .IsUnique();
+                    b.HasIndex("MenuItemId");
 
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderLines");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.SocialMedia", b =>
+            modelBuilder.Entity("Domain.Models.OrderLineAdditional", b =>
+                {
+                    b.Property<string>("OrderLineId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<string>("AdditionalId")
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderLineId", "AdditionalId");
+
+                    b.HasIndex("AdditionalId");
+
+                    b.ToTable("OrderLineAdditionals");
+                });
+
+            modelBuilder.Entity("Domain.Models.SocialMedia", b =>
                 {
                     b.Property<string>("SocialMediaId")
                         .HasMaxLength(36)
@@ -306,7 +361,7 @@ namespace CoffeeShopBack.Migrations
                     b.ToTable("SocialMedias");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.User", b =>
+            modelBuilder.Entity("Domain.Models.User", b =>
                 {
                     b.Property<string>("UserId")
                         .HasMaxLength(36)
@@ -350,12 +405,15 @@ namespace CoffeeShopBack.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.Category", b =>
+            modelBuilder.Entity("Domain.Models.Category", b =>
                 {
-                    b.HasOne("CoffeeShopBack.Models.CoffeeShop", "CoffeeShop")
+                    b.HasOne("Domain.Models.CoffeeShop", "CoffeeShop")
                         .WithMany("Categories")
                         .HasForeignKey("CoffeeShopId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -364,9 +422,9 @@ namespace CoffeeShopBack.Migrations
                     b.Navigation("CoffeeShop");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.Location", b =>
+            modelBuilder.Entity("Domain.Models.Location", b =>
                 {
-                    b.HasOne("CoffeeShopBack.Models.CoffeeShop", "CoffeeShop")
+                    b.HasOne("Domain.Models.CoffeeShop", "CoffeeShop")
                         .WithMany("Locations")
                         .HasForeignKey("CoffeeShopId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -375,9 +433,9 @@ namespace CoffeeShopBack.Migrations
                     b.Navigation("CoffeeShop");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.MenuItem", b =>
+            modelBuilder.Entity("Domain.Models.MenuItem", b =>
                 {
-                    b.HasOne("CoffeeShopBack.Models.Category", "Category")
+                    b.HasOne("Domain.Models.Category", "Category")
                         .WithMany("MenuItems")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -386,15 +444,34 @@ namespace CoffeeShopBack.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.Order", b =>
+            modelBuilder.Entity("Domain.Models.MenuItemAdditional", b =>
                 {
-                    b.HasOne("CoffeeShopBack.Models.CoffeeShop", "CoffeeShop")
+                    b.HasOne("Domain.Models.Additional", "Additional")
+                        .WithMany("MenuItemAdditionals")
+                        .HasForeignKey("AdditionalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.MenuItem", "MenuItem")
+                        .WithMany("MenuItemAdditionals")
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Additional");
+
+                    b.Navigation("MenuItem");
+                });
+
+            modelBuilder.Entity("Domain.Models.Order", b =>
+                {
+                    b.HasOne("Domain.Models.CoffeeShop", "CoffeeShop")
                         .WithMany("Orders")
                         .HasForeignKey("CoffeeShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CoffeeShopBack.Models.User", "User")
+                    b.HasOne("Domain.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -405,14 +482,15 @@ namespace CoffeeShopBack.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.OrderLine", b =>
+            modelBuilder.Entity("Domain.Models.OrderLine", b =>
                 {
-                    b.HasOne("CoffeeShopBack.Models.MenuItem", "MenuItem")
-                        .WithOne("OrderLine")
-                        .HasForeignKey("CoffeeShopBack.Models.OrderLine", "MenuItemId")
+                    b.HasOne("Domain.Models.MenuItem", "MenuItem")
+                        .WithMany("OrderLines")
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("CoffeeShopBack.Models.Order", "Order")
+                    b.HasOne("Domain.Models.Order", "Order")
                         .WithMany("OrderLines")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -423,9 +501,28 @@ namespace CoffeeShopBack.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.SocialMedia", b =>
+            modelBuilder.Entity("Domain.Models.OrderLineAdditional", b =>
                 {
-                    b.HasOne("CoffeeShopBack.Models.CoffeeShop", "CoffeeShop")
+                    b.HasOne("Domain.Models.Additional", "Additional")
+                        .WithMany("OrderLineAdditionals")
+                        .HasForeignKey("AdditionalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.OrderLine", "OrderLine")
+                        .WithMany("OrderLineAdditionals")
+                        .HasForeignKey("OrderLineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Additional");
+
+                    b.Navigation("OrderLine");
+                });
+
+            modelBuilder.Entity("Domain.Models.SocialMedia", b =>
+                {
+                    b.HasOne("Domain.Models.CoffeeShop", "CoffeeShop")
                         .WithMany("SocialMedias")
                         .HasForeignKey("CoffeeShopId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -434,12 +531,19 @@ namespace CoffeeShopBack.Migrations
                     b.Navigation("CoffeeShop");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.Category", b =>
+            modelBuilder.Entity("Domain.Models.Additional", b =>
+                {
+                    b.Navigation("MenuItemAdditionals");
+
+                    b.Navigation("OrderLineAdditionals");
+                });
+
+            modelBuilder.Entity("Domain.Models.Category", b =>
                 {
                     b.Navigation("MenuItems");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.CoffeeShop", b =>
+            modelBuilder.Entity("Domain.Models.CoffeeShop", b =>
                 {
                     b.Navigation("Categories");
 
@@ -450,18 +554,24 @@ namespace CoffeeShopBack.Migrations
                     b.Navigation("SocialMedias");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.MenuItem", b =>
+            modelBuilder.Entity("Domain.Models.MenuItem", b =>
                 {
-                    b.Navigation("OrderLine")
-                        .IsRequired();
+                    b.Navigation("MenuItemAdditionals");
+
+                    b.Navigation("OrderLines");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.Order", b =>
+            modelBuilder.Entity("Domain.Models.Order", b =>
                 {
                     b.Navigation("OrderLines");
                 });
 
-            modelBuilder.Entity("CoffeeShopBack.Models.User", b =>
+            modelBuilder.Entity("Domain.Models.OrderLine", b =>
+                {
+                    b.Navigation("OrderLineAdditionals");
+                });
+
+            modelBuilder.Entity("Domain.Models.User", b =>
                 {
                     b.Navigation("Orders");
                 });

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Domain.Models;
 
-namespace CoffeeShopBack.Models;
-
-public partial class Order
+public class Order
 {
     public string OrderId { get; set; } = null!;
 

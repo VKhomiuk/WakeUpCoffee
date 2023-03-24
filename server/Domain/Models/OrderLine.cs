@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Domain.Models;
 
-namespace CoffeeShopBack.Models;
-
-public partial class OrderLine
+public class OrderLine
 {
     public string OrderLineId { get; set; } = null!;
 
@@ -18,4 +15,6 @@ public partial class OrderLine
     public virtual MenuItem MenuItem { get; set; } = null!;
 
     public virtual Order Order { get; set; } = null!;
+
+    public virtual ICollection<OrderLineAdditional> OrderLineAdditionals { get; set; } = new List<OrderLineAdditional>();
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Domain.Models;
 
-namespace CoffeeShopBack.Models;
-
-public partial class CoffeeShop
+public class CoffeeShop
 {
     public string CoffeeShopId { get; set; } = null!;
 

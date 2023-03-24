@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Domain.Models;
 
-namespace CoffeeShopBack.Models;
-
-public partial class SocialMedia
+public class SocialMedia
 {
     public string SocialMediaId { get; set; } = null!;
 
